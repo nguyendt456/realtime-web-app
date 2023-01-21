@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  app-build:
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    network_mode: "host"
+    restart: always
+    volumes:
+      - ./backend:/app
+      - ./backend/go.mod:/app/go.mod
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nguyen
+      MONGO_INITDB_ROOT_PASSWORD: nguyen123
+  
+  mongo-express:
+    image: mongo-express
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: nguyen
+      ME_CONFIG_MONGODB_ADMINPASSWORD: nguyen123
+      ME_CONFIG_MONGODB_URL: mongodb://nguyen:nguyen123@localhost:27017/
+    network_mode: "host"
